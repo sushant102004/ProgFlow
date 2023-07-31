@@ -4,7 +4,6 @@ import { Utils } from './utils/getDetails'
 
 export class ProgFlow {
     isSessionRunning = false
-    fileCreateSub: vscode.Disposable | undefined
 
     ds: DataStream = new DataStream()
     utils: Utils = new Utils()
@@ -24,7 +23,7 @@ export class ProgFlow {
             vscode.window.showInformationMessage('🔥 Coding Session Started')
             this.captureTime()
         } else {
-            vscode.window.showInformationMessage('😁 Session already running')
+            vscode.window.showInformationMessage('⚠️ Session already running')
         }
     }
 
@@ -42,6 +41,9 @@ export class ProgFlow {
         let timeInterval = setInterval(() => {
             if (this.isSessionRunning) {
                 console.log(this.utils.getLanguages())
+                console.log(this.utils.getProject())
+                console.log(this.utils.getOS())
+                console.log(this.utils.getComputerName())
             } else {
                 console.log('Session Stopped')
                 clearInterval(timeInterval)
