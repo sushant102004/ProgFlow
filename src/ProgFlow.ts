@@ -44,6 +44,7 @@ export class ProgFlow {
                 console.log(this.utils.getProject())
                 console.log(this.utils.getOS())
                 console.log(this.utils.getComputerName())
+                console.log(this.utils.getOpenedFiles())
             } else {
                 console.log('Session Stopped')
                 clearInterval(timeInterval)

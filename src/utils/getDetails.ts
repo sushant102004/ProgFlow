@@ -37,4 +37,15 @@ export class Utils {
             throw new Error('Could not get computer name')
         }
     }
+
+    getOpenedFiles() {
+        const visibleEditors = vscode.window.visibleTextEditors
+        const openedFileNames: string[] = visibleEditors.map(editor => {
+            const filePath = editor.document.fileName
+            const rgx = /[^\\]+$/
+
+            return filePath.match(rgx)![0] ?? ''
+        })
+        return openedFileNames
+    }
 }
