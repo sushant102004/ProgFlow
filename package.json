@@ -20,6 +20,14 @@
       {
         "command": "progflow.closeSession",
         "title": "Close Session"
+      },
+      {
+        "command": "progflow.setAPIKey",
+        "title": "Set API Key"
+      },
+      {
+        "command": "progflow.addProjectName",
+        "title": "Add Project Name"
       }
     ]
   },
