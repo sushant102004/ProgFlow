@@ -9,6 +9,7 @@ export class ProgFlow {
 
     ds: DataStream = new DataStream()
     utils: Utils = new Utils()
+    apiHandler: APIHandler = new APIHandler()
 
     constructor() {
         this.ds.on('data', (chunk) => {
@@ -20,12 +21,11 @@ export class ProgFlow {
 
 
     startSession(ctx: vscode.ExtensionContext): void {
-        let apiHandler = new APIHandler()
 
         if (!this.isSessionRunning) {
             if (this.utils.getProject() !== 'No Folder Opened') {
-                apiHandler.addProject(ctx, this.utils.getProject())
-                this.captureTime()
+                this.apiHandler.addProject(ctx, this.utils.getProject())
+                this.captureTime(ctx)
                 this.isSessionRunning = true
                 vscode.window.showInformationMessage('🔥 Coding Session Started')
             } else {
@@ -64,18 +64,18 @@ export class ProgFlow {
     }
 
 
-    captureTime(): void {
+    captureTime(ctx: vscode.ExtensionContext): void {
         let timeInterval = setInterval(() => {
             if (this.isSessionRunning) {
-                // console.log(this.utils.getLanguages())
-                // console.log(this.utils.getProject())
-                // console.log(this.utils.getOS())
-                // console.log(this.utils.getComputerName())
-                // console.log(this.utils.getOpenedFiles())
+
+                let projectName = this.utils.getProject()
+                
+                this.apiHandler.updateCodingActivity(ctx, projectName)
+
             } else {
                 console.log('Session Stopped')
                 clearInterval(timeInterval)
             }
-        }, 5000)
+        }, 180000)
     }
 }

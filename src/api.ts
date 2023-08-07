@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import * as vscode from 'vscode'
 import http = require('http');
+import axios from 'axios';
 
 export class APIHandler {
-    async addProject(ctx: vscode.ExtensionContext,name : string) {
+    async addProject(ctx: vscode.ExtensionContext, name: string) {
         const baseURL = 'http://localhost:8080/project/add'
 
-        const apiKey : string = ctx.globalState.get('progflow.apiKey') ?? ""
+        const apiKey: string = ctx.globalState.get('progflow.apiKey') ?? ""
 
         const postData = JSON.stringify({
-            name : name
+            name: name
         })
         const options = {
             method: 'POST',
@@ -38,5 +39,19 @@ export class APIHandler {
 
         request.write(postData)
         request.end()
+    }
+
+
+    async updateCodingActivity(ctx: vscode.ExtensionContext, name: string) {
+        const baseURL = 'http://localhost:8080/coding-activity'
+
+        const apiKey: string = ctx.globalState.get('progflow.apiKey') ?? ""
+
+        const headers = {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey
+        }
+
+        axios.post(baseURL, { projectName: name }, { headers })
     }
 }
