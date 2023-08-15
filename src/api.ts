@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import * as vscode from 'vscode'
-import http = require('http');
-import axios from 'axios';
+import http = require('http')
+import axios from 'axios'
+require('dotenv').config()
 
 export class APIHandler {
     async addProject(ctx: vscode.ExtensionContext, name: string) {
-        const baseURL = 'http://localhost:8080/project/add'
-
         const apiKey: string = ctx.globalState.get('progflow.apiKey') ?? ""
+        const baseURL = 'http://localhost:8080/project/add'
 
         const postData = JSON.stringify({
             name: name
@@ -42,16 +42,20 @@ export class APIHandler {
     }
 
 
-    async updateCodingActivity(ctx: vscode.ExtensionContext, name: string) {
-        const baseURL = 'http://localhost:8080/coding-activity'
+    async updateCodingActivity(ctx: vscode.ExtensionContext, name: string, startTime: string) {
+        try {
+            const baseURL = 'http://localhost:8080/coding-activity'
+            const apiKey: string = ctx.globalState.get('progflow.apiKey') ?? ""
 
-        const apiKey: string = ctx.globalState.get('progflow.apiKey') ?? ""
+            const headers = {
+                'Content-Type': 'application/json',
+                'x-api-key': apiKey
+            }
 
-        const headers = {
-            'Content-Type': 'application/json',
-            'x-api-key': apiKey
+            let response = await axios.post(baseURL, { projectName: name, startTime: startTime }, { headers })
+            console.log(response.data)
+        } catch (err) {
+            console.log(err)
         }
-
-        axios.post(baseURL, { projectName: name }, { headers })
     }
 }

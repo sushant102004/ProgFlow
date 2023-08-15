@@ -2,6 +2,7 @@ import * as vscode from 'vscode'
 import { DataStream } from './streamListener'
 import { Utils } from './utils/getDetails'
 import { APIHandler } from './api';
+import { TimeUtils } from './utils/time';
 
 
 export class ProgFlow {
@@ -28,6 +29,8 @@ export class ProgFlow {
                 this.captureTime(ctx)
                 this.isSessionRunning = true
                 vscode.window.showInformationMessage('🔥 Coding Session Started')
+                ctx.globalState.update('progflow.projectStartTime', TimeUtils.getFormattedTime())
+
             } else {
                 vscode.window.showInformationMessage('❌ Open folder to start coding session')
             }
@@ -69,13 +72,19 @@ export class ProgFlow {
             if (this.isSessionRunning) {
 
                 let projectName = this.utils.getProject()
-                
-                this.apiHandler.updateCodingActivity(ctx, projectName)
+                let startTime: string = ctx.globalState.get('progflow.projectStartTime') ?? ''
+
+                if (startTime === '') {
+                    vscode.window.showErrorMessage('Unable to get start time.')
+                    return
+                }
+
+                this.apiHandler.updateCodingActivity(ctx, projectName, startTime)
 
             } else {
                 console.log('Session Stopped')
                 clearInterval(timeInterval)
             }
-        }, 180000)
+        }, 30000)
     }
 }

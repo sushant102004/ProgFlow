@@ -6,7 +6,6 @@ export function activate(ctx: vscode.ExtensionContext) {
 
 	progFlow.startSession(ctx)
 
-
 	let newSession = vscode.commands.registerCommand('progflow.startSession', () => {
 		progFlow.startSession(ctx)
 	})
