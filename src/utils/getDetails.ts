@@ -1,5 +1,6 @@
 import * as vscode from 'vscode'
 import * as os from 'os'
+import path = require('path')
 
 export class Utils {
     getLanguages() {
@@ -7,7 +8,7 @@ export class Utils {
 
         const openedEditor = vscode.window.visibleTextEditors
 
-        openedEditor.map(editor => names.push(editor.document.languageId))
+        openedEditor.map(editor => names.push(path.extname(editor.document.fileName)))
         return names
     }
 

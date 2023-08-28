@@ -22,7 +22,6 @@ export class ProgFlow {
 
 
     startSession(ctx: vscode.ExtensionContext): void {
-
         if (!this.isSessionRunning) {
             if (this.utils.getProject() !== 'No Folder Opened') {
                 this.apiHandler.addProject(ctx, this.utils.getProject())
@@ -68,23 +67,34 @@ export class ProgFlow {
 
 
     captureTime(ctx: vscode.ExtensionContext): void {
-        let timeInterval = setInterval(() => {
+        let timeInterval = setInterval(async () => {
             if (this.isSessionRunning) {
 
                 let projectName = this.utils.getProject()
+                let languages = this.utils.getLanguages()
+
+
                 let startTime: string = ctx.globalState.get('progflow.projectStartTime') ?? ''
 
-                if (startTime === '') {
+                if (startTime === undefined) {
                     vscode.window.showErrorMessage('Unable to get start time.')
                     return
                 }
 
-                this.apiHandler.updateCodingActivity(ctx, projectName, startTime)
+                await this.apiHandler.updateCodingActivity(ctx, projectName, startTime)
 
+                languages.forEach(language => {
+                    let languageSTime: string = ctx.globalState.get(`progflow.languageStartTime-${language}`) ?? ''
+                    if (languageSTime === undefined) {
+                        ctx.globalState.update(`progflow.languageStartTime-${language}`, TimeUtils.getFormattedTime())
+                    } else {
+                        this.apiHandler.updateLanguageActivity(ctx, projectName, language, languageSTime)
+                    }
+                })
             } else {
                 console.log('Session Stopped')
                 clearInterval(timeInterval)
             }
-        }, 30000)
+        }, 10000)
     }
 }

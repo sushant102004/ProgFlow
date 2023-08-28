@@ -58,4 +58,21 @@ export class APIHandler {
             console.log(err)
         }
     }
+
+    async updateLanguageActivity(ctx: vscode.ExtensionContext, name: string, languageName: string, startTime: string) {
+        try {
+            const baseURL = 'http://localhost:8080/language-activity'
+            const apiKey: string = ctx.globalState.get('progflow.apiKey') ?? ""
+
+            const headers = {
+                'Content-Type': 'application/json',
+                'x-api-key': apiKey
+            }
+
+            let response = await axios.post(baseURL, { projectName: name, languageName: languageName, startTime: startTime }, { headers })
+            console.log(response.data)
+        } catch (err) {
+            console.log(err)
+        }
+    }
 }
